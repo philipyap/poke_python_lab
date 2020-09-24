@@ -13,6 +13,17 @@ class Pokemon:
     # class methods to get an idea of what you might want to call these variables along with their ordering
     # to call  these parameters
     # 
+    def __init__(self, name, type1, type2, hp, ph_attack, defense, sp_attack, sp_defense, speed, moves):
+        self.name = name
+        self.type1 = type1
+        self.type2 = type2
+        self.hp = hp
+        self.ph_attack = ph_attack
+        self.defense = defense
+        self.sp_attack = sp_attack
+        self.sp_defense = sp_defense
+        self.speed = speed
+        self.moves = moves
     # Define a revive(???, ???): method for the Pokemon class. This will allow pokemon to revive after a battle
     # later on in the simulation
     #
@@ -21,6 +32,10 @@ class Pokemon:
     #
     # The revive function is also one line. It starts with self.__init__() which has strictly 10 variable parameters
     # One variable parameter passed into this function is not like the others, what might it be???
+    
+    def revive(self, pokemon_hp):
+        self.__init__(self.name, self.type1, self.type2, self.hp, self.ph_attack, self.defense, self.sp_attack, self.sp_defense, self.speed, self.moves)
+    
     
 
 
@@ -632,21 +647,33 @@ xerneas = Pokemon('Xerneas', 394, 268, 226, 397, 232, 297, 'fairy', 'none',
 # Create at least 3 new instances of the Pokemon Class
 # here. You can check to see if the pokemon has been created properly
 # by printing its different attribuites.
+# stats: HP, ATTACK, DEFENSE, SPECIAL ATTACK, SPECIAL DEFENSE, SPEED,
 
 # 1st new instance
-
+cinderace = Pokemon('Cinderace', 364, 364, 273, 251, 273, 370, 'fire','none',
+[{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''},
+{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''},
+{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''},
+{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''}])
 # 2nd new instance
-
+rillaboom = Pokemon('Rillaboom', 404, 383, 306, 240, 262, 295, 'grass','none',
+[{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''},
+{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''},
+{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''},
+{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''}])     
 # 3rd new instance
-
+inteleon = Pokemon('Inteleon', 344, 295, 251, 383, 251, 372, 'water','none',
+[{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''},
+{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''},
+{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''},
+{'name': '', 'movetype':'', 'damage': '', 'phy_special': ''}])
 
 ########################################################################################
 #                LIST OF ALL POKEMON INSTANCES
 # PART 2 ########### TO DO ##################
 # Add your new instances of the pokemon class to the list of all_pokemon
-
-all_pokemon = [venusaur, charizard, blastoise, meganium, typhlosion, feraligatr, sceptile, blaziken, swampert, torterra, infernape, empoleon, serperior, emboar, samurott, chesnaught, delphox, greninja, decidueye, incineroar, primarina, mewtwo, groudon, kyogre, rayquaza, lugia, ho_oh, palkia, dialga, giratina, yveltal, xerneas, arceus]
-
+all_pokemon = [venusaur, charizard, blastoise, meganium, typhlosion, feraligatr, sceptile, blaziken, swampert, torterra, infernape, empoleon, serperior, emboar, samurott, chesnaught, delphox, greninja, decidueye, incineroar, primarina, mewtwo, groudon, kyogre, rayquaza, lugia, ho_oh, palkia, dialga, giratina, yveltal, xerneas, arceus, rillaboom, cinderace, inteleon, ]
+    
 
 ########################################################################################
 #                BATTLE FUNCTION
@@ -659,15 +686,84 @@ all_pokemon = [venusaur, charizard, blastoise, meganium, typhlosion, feraligatr,
 # new_game() function
 
 
-def battle():       # def battle(???, ???, ???, ???):
     # PART 3 ############# TO DO ###################
+def battle(pokemon1, pokemon2, turn_counter, save_mon):       # def battle(???, ???, ???, ???):
+    turn_counter.add_turn()
+    print(f'Turn{turn_counter.counter}')
+
+    # base case
+    if pokemon1.hp <= 0:
+        turn_counter.reset()
+        print(f'{pokemon2.name} win!')
+        return new_game(pokemon1, pokemon2, save_mon)
+    
+    elif pokemon2.hp <= 0:
+        turn_counter.reset()
+        print(f'{pokemon1.name} win!')
+        return new_game(pokemon1, pokemon2, save_mon)
+
+    
     # Establish a base case for the pokemon battle simulation
     # Add to the turn count on each turn (recursion)
     # Create a randomized selection of moves for both pokemon
+
+    selection1 = round((len(pokemon1.moves)-1) * random())
+    move1_name = pokemon1.moves[selection1]['name']
+    move1 = pokemon1.attack(selection1)[0:5]
+
+    selection2 = round((len(pokemon2.moves)-1) * random())
+    move2_name = pokemon2.moves[selection1]['name']
+    move2_name = pokemon2.attack(selection2)[0:5]
+
     # Store each pokemon's move selection as integer variables
     # Store each move's name as variables
     # Store the data from each pokemon's moves into variables 
     # Have the faster pokemon attack first
+    if pokemon1.speed > pokemon2.speed:
+        print(f'{pokemon1.name} used {move1_name}')
+        pokemon2.damage(move1[0], move1[1]. move1[2], move1[3], move1[4])
+        if pokemon2.hp <= 0:
+            turn_counter.reset()
+            print(f'{pokemon1.name} win!')
+            return new_game(pokemon1, pokemon2, save_mon)
+        else:
+            print(f'{pokemon2.name} used {move2_name}!')
+            pokemon1.damage(move2[0], move2[1], move2[2], move2[3], move2[4])
+    elif pokemon2.speed > pokemon1.speed:
+        
+        print(f'{pokemon2.name} used {move2_name}!')
+        pokemon1.damage(move2[0], move2[1], move2[2], move2[3], move2[4])
+        if pokemon1.hp <= 0:
+            turn_counter.reset()
+            print(f'{pokemon2.name} wins!')
+            return new_game(pokemon1, pokemon2, save_mon)
+        else:
+            print(f'{pokemon1.name} used {move1_name}!')
+            pokemon2.damage(move1[0], move1[1], move1[2], move1[3], move1[4])
+    else:
+        
+        first = round(2 * random())
+        if first == 1:
+            print(f"{pokemon1.name} used {move1_name}")
+            pokemon2.damage(move1[0], move1[1], move1[2], move1[3], move1[4])
+            if pokemon2.hp <= 0:
+                turn_counter.reset()
+                print(f'{pokemon1.name} wins!')
+                return new_game(pokemon1, pokemon2, save_mon) 
+            else:
+                print(f"{pokemon2.name} used {move2_name}")
+                pokemon1.damage(move2[0], move2[1], move2[2], move2[3], move2[4])
+        else:
+            print(f"{pokemon2.name} used {move2_name}")
+            pokemon1.damage(move2[0], move2[1], move2[2], move2[3], move2[4])
+            if pokemon1.hp <= 0:
+                turn_counter.reset()
+                print(f'{pokemon2.name} wins!')
+                return new_game(pokemon1, pokemon2, save_mon)
+            else:
+                print(f"{pokemon1.name} used {move1_name}")
+                pokemon2.damage(move1[0], move1[1], move1[2], move1[3], move1[4])
+    return battle(pokemon1, pokemon2, turn_counter, save_mon)
     # Then have the second pokemon attack
     # Print out which pokemon is making which attack whenever a pokemon makes an attack
     # Send the right data for the pokemon to take damage from the other pokemon's attacks
